@@ -11,7 +11,7 @@ H = 2000;
 
 % actual state, not observable, do not reference
 x(:,1) = target_hover_state;
-Sigma(:,:,1) = ones(
+Sigma(:,:,1) = ones(size(A));
 % initial state estimate (given)
 mu_x(:,1) = x(:,1);
 
