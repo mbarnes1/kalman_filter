@@ -11,9 +11,11 @@ H = 2000;
 
 % actual state, not observable, do not reference
 x(:,1) = target_hover_state;
-
+Sigma = 10*ones(size(A)) + eye(size(A));  % this is positive definite
 % initial state estimate (given)
+mu_x = zeros(length(x), H);
 mu_x(:,1) = x(:,1);
+
 % initial state observation (given)
 y(:,1) = x(:,1);
 
@@ -40,7 +42,8 @@ for t=2:H
     
     % use Kalman filter to calculate mean state
     % from mu_x(:,t-1), y(t) ,u(t-1)
-    mu_x(:,t) = y(:,t); % dumb take observation as estimate
+    [mu_x(:,t), Sigma] = kalman_filter(mu_x(:,t-1), Sigma, y(:, t), u(:,t-1), A, B, C);
+    %mu_x(:,t) = y(:,t); % dumb take observation as estimate
     
     % LQR controller generates control for next step.  u(t-1) takes x(:,t-1)
     % to x(:,t).  do not change (only change mu_x value above)
@@ -50,7 +53,7 @@ for t=2:H
     
 end
 
-figure; plot(x(idx.ned,:)'); legend('north', 'east', 'down'); title('Hover position');
+figure; plot(x(idx.ned,:)'); legend('north', 'east', 'down'); title('Kalman Hover position, default parameters');
 figure; plot(x(idx.q,:)'); legend('qx', 'qy', 'qz', 'qw'); title('Hover quaternion');
 figure; plot(x(idx.u_prev,:)'); legend('aileron','elevator','rudder','collective'); title('Hover trim');
 

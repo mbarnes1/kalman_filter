@@ -1,0 +1,2 @@
+Initial belief Sigma, what is a good choice?
+Verify corrects of R & Q using sigmaX and sigmaY
